@@ -1,8 +1,4 @@
 # !/bin/bash
-PURPLE='0;35'
-NC='\033[0m' 
-VERSAO=11
-
 
 function InstalacaoJava () {
     echo  "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Estou verificando se seu servidor tem alguma versão de Java instalada..."
@@ -14,14 +10,14 @@ function InstalacaoJava () {
         then
             echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Você já tem alguma versão de Java instalado no seu servidor!"
         else
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Parece que esta máquina não tem nenhuma versão de Java instalado"
+            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Parece que esta máquina não tem nenhuma versão de Java instalado..."
     fi
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Deseja instalar a versão que Datasentry recomenda? (y/n)"
     read inst
     if [ $inst = "y" ]
         then
             echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Perfeito, vamos instalar o Java!"
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Trazendo algumas configurações para a instalação"
+            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Trazendo algumas configurações para a instalação!"
             sleep 1
             sudo add-apt-repository ppa:webupd8team/java -y
             sleep 1
@@ -40,23 +36,22 @@ function InstalacaoJava () {
 
 function InstalarDatasentry () {
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Instalando o Datasentry..."
+    sleep 2
     # Se sim, vamos apagar o projeto e vamos clonar novamente o projeto em sua ultima versão estável
     DIR=$HOME/datasentry
     sudo mkdir $DIR
-    wget -q https://github.com/AccentureSPtech2ADSA/datasentry-public/blob/main/data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar
-    sudo cp data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar $DIR/datasentryapp.jar
-    sudo rm -rf data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar
+    wget -q https://github.com/AccentureSPtech2ADSA/datasentry-public/blob/main/data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar?raw=true
+    sudo cp data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar\?raw\=true $DIR/datasentryapp.jar
+    sudo rm -rf 'data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar?raw=true'
     sudo chmod 755 $DIR/datasentryapp.jar
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Instalação finalizada!!"
     sleep 2
-    clear
 }
 function BaixarDatasentry () {
     DIR=$HOME/datasentry
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Vamos agora baixar o App do Datasentry!"
     sleep 1
     # Verificamos se o projeto já existe no /home/user, caso exista iremos perguntar se deseja substituir (recomendados caso esteja desatualizado)
-    test -d "$DIR" && echo "Exists $DIR " || echo "Does not exists"
     if [ -d "$DIR" ]
         then
             echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Parece que o App já foi instalado anteriormente..."
@@ -70,7 +65,7 @@ function BaixarDatasentry () {
                     sudo rm -rf $DIR
                     InstalarDatasentry
                 else 
-                    echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Certo! Vamos sem substituir então"
+                    echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Certo! Vamos sem substituir então!"
             sleep 2
             fi
         else 
@@ -83,45 +78,59 @@ function ConfiguracoesAdicionais () {
     APP=$DIR/datasentryapp.jar
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Vamos fazer algumas configurações adicionais agora!"
     # Vamos perguntar se ele deseja criar um atalho para ele executar facilmente pela CLI
-    echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Deseja que seja criado um atalho para executar o Datasentry usando o comando 'exec-datasentry' em na linha de comando? (y/n)"
-    read inst
-    # Se sim vamos criar este atalho e avisar que ele pode chamar o .JAR escrevendo 'exec-datasentry' no CLI
-    if [ $inst = "y" ]
+    cat ~/.bashrc | grep datasentry # verifica se ja tem o CLI
+    if [ $? = 0 ]
         then
-            echo "alias exec-datasentry='java -jar $APP' " >> $HOME/.bashrc
+        echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Já temos um atalho de CLI!"
+        else
+            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Deseja que seja criado um atalho para executar o Datasentry usando o comando 'exec-datasentry' em na linha de comando? (y/n)"
+            read inst
+            # Se sim vamos criar este atalho e avisar que ele pode chamar o .JAR escrevendo 'exec-datasentry' no CLI
+            if [ $inst = "y" ]
+                then
+                    echo "alias exec-datasentry='java -jar $APP' " >> $HOME/.bashrc
+                    sleep 1
+                    echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Inserindo atalho exec-datasentry!"
+                    sleep 2
+                    echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Atalho inserido com sucesso!"
+                else
+                    echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Certo! Sem atalhos CLI por aqui..."
+            fi
+    fi
+    ls /usr/share/applications/ | grep datasentry
+    if [ $? = 0 ]
+        then
+            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Já temos um atalho de Interface gráfica!"
+        else
+            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Caso use interface gráfica, deseja colocar um atalho com icone em seu desktop?(y/n)"
+            # Vamos verificar se existe uma interface gráfica no sistema
             sleep 1
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Inserindo atalho exec-datasentry!"
-            sleep 2
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Atalho inserido com sucesso!"
-        else
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Certo! Sem atalhos CLI por aqui..."
+            read inst
+            if [ $inst = "y" ] 
+            then
+                # Se existir vamos perguntar se ele deseja um a
+                #talho desktop para acessar via Icone o aplicativo Datasentry
+                # Se ele quiser vamos gerar um datasentry.desktop no share dele pra ele poder acessar, senão vamos ignorar
+                LOCAL=/usr/share/applications
+                APPDESK=datasentry.desktop
+                touch $APPDESK
+                echo "[Desktop Entry]" > $APPDESK
+                echo "Exec=java -jar $APP" >> $APPDESK
+                echo "Type=Application" >> $APPDESK
+                echo "Icon=$DIR/icon.xpm" >> $APPDESK
+                sudo cp $APPDESK $LOCAL/$APPDESK
+                sleep 2
+                rm -f $APPDESK
+                echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Atalho com ícone inserido com sucesso!"
+            else
+                echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Certo! Sem atalhos GUI gráficos..."
+            fi
     fi
-
-    echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Caso use interface gráfica, deseja colocar um atalho com icone em seu desktop?(y/n)"
-    # Vamos verificar se existe uma interface gráfica no sistema
-    sleep 1
-    read inst
-    # Se existir vamos perguntar se ele deseja um a
-    #talho desktop para acessar via Icone o aplicativo Datasentry
-    # Se ele quiser vamos gerar um datasentry.desktop no share dele pra ele poder acessar, senão vamos ignorar
-    LOCAL=/usr/share/applications/
-    APPDESK=datasentry.desktop
-    if [ $inst = "y" ]
-        then
-            wget -q https://github.com/AccentureSPtech2ADSA/datasentry-public/blob/main/icon.XPM
-            sudo cp icon.XPM $DIR/icon.xpm
-            sudo touch $APPDESK $LOCAL
-            sudo rm -rf data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar
-            sudo echo "[Desktop Entry]" > $LOCAL$APPDESK
-            sudo echo "Exec=java -jar $APP" >> $LOCAL$APPDESK
-            sudo echo "Type=Application" >> $LOCAL$APPDESK
-            sudo echo "Icon=$DIR/icon.xpm" >> $LOCAL$APPDESK
-            sleep 2
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Atalho com ícone inserido com sucesso!"
-        else
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Certo! Sem atalhos GUI gráficos..."
-    fi
+    wget -q https://github.com/AccentureSPtech2ADSA/datasentry-public/blob/main/icon.XPM?raw=true
+    sudo cp 'icon.XPM?raw=true' $DIR/icon.xpm
+    rm -f 'icon.XPM?raw=true'
     source $HOME/.bashrc
+    source ~/.bashrc 
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Sessão de configurações adicionais finalizada!"
 }
 function Execnow () {
@@ -135,13 +144,10 @@ function Execnow () {
             APP=$DIR/datasentryapp.jar
             java -jar $APP
         else
+            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Sem executar por agora."
             sleep 2
-            clear
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Configuração concluida!"
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Obrigado e pode contar conosco sempre! :)"
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Datasentry Copyright 2022"
-            echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Acesse já: datasentry.sysnet.net e melhore já o monitoramento com a gente!"
     fi
+    
 }
 	
 echo  "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Olá usuário $USERNAME, vou te acompanhar para a instalação da aplicação do Datasentry em sua máquina"
@@ -157,6 +163,13 @@ sleep 1
 ConfiguracoesAdicionais
 sleep 1
 Execnow
+
+sleep 2
+
+echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Configuração concluida!"
+echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Obrigado e pode contar conosco sempre! :)"
+echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Datasentry Copyright © 2022"
+echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Acesse já: http://datasentry.sysnet.net e melhore já o monitoramento com a gente!"
 
 sleep 2
 
