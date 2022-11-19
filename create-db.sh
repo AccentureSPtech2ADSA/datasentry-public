@@ -16,15 +16,6 @@ if ! [[ $? -eq 0 ]]
     echo $mensagemAutomatizada "Atualizando os pacotes novamente..."
     sudo apt update && sudo apt upgrade -y
 
-    echo $mensagemAutomatizada "Você já tem o Docker instalado!"
-    echo $mensagemAutomatizada "Adicionando algumas configurações do Docker"
-    sudo groupadd docker
-    sudo usermod -aG docker $USER
-    sudo systemctl enable docker
-    sudo systemctl restart docker
-    source ~/.bashrc
-    bash
-
     sleep 2
 fi
 
@@ -39,10 +30,9 @@ then
     sudo systemctl enable docker
     sudo systemctl restart docker
     source ~/.bashrc
-    bash
     echo $mensagemAutomatizada "Configurações realizadas!"
     else
-        echo $mensagemAutomatizada "Você já possuí os grupos corretos!"
+    echo $mensagemAutomatizada "Você já possuí os grupos corretos!"
 fi
 
 echo $mensagemAutomatizada "Verificando se o banco de dados já existe..."
@@ -57,7 +47,7 @@ docker ps -a | grep datasentry-db
                     docker exec -it datasentry-db /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P Gfgrupo1 -q "DROP DATABASE IF EXISTS datasentry"
                 else
                     echo $mensagemAutomatizada "Você optou por não reinstalar o banco de dados."
-            fi 
+            fi
         fi
     sleep 2
 
