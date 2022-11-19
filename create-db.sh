@@ -1,6 +1,6 @@
 #!/bin/bash
 
-msgAutomatizada="$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) "
+msgAutomatizada='$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) '
 
 echo $mensagemAutomatizada "Atualizando os pacotes..."
 sudo apt update && sudo apt upgrade -y
@@ -29,22 +29,22 @@ then
     sudo systemctl restart docker
     source ~/.bashrc
     echo $mensagemAutomatizada "Configurações realizadas!"
-    else
+else
     echo $mensagemAutomatizada "Você já possuí os grupos corretos!"
 fi
 
 echo $mensagemAutomatizada "Verificando se o banco de dados já existe..."
 docker ps -a | grep datasentry-db
         if [[ ! $? -eq 0 ]]
-            then
+        then
             echo $mensagemAutomatizada "Voce já possuí o nosso banco de dados!"
             echo $mensagemAutomatizada "Deseja reinstalar novamente?(S/N)"
             read resposta
             if [ \"$resposta\" == \"S\" ]
-                then
-                    docker exec -it datasentry-db /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P Gfgrupo1 -q "DROP DATABASE IF EXISTS datasentry"
-                else
-                    echo $mensagemAutomatizada "Você optou por não reinstalar o banco de dados."
+            then
+                docker exec -it datasentry-db /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P Gfgrupo1 -q "DROP DATABASE IF EXISTS datasentry"
+            else
+                echo $mensagemAutomatizada "Você optou por não reinstalar o banco de dados."
             fi
         fi
     sleep 2
