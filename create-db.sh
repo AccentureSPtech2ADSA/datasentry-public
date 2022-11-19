@@ -5,6 +5,7 @@ sudo apt update && sudo apt upgrade -y
 
 docker --version
 if [[ ! $? -eq 0 ]]
+then
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7)  Instalando o Docker!"
     sudo apt install docker -y
     sudo apt install docker.io -y
