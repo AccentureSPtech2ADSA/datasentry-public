@@ -6,7 +6,7 @@ echo $mensagemAutomatizada "Atualizando os pacotes..."
 sudo apt update && sudo apt upgrade -y
 
 docker --version
-if ! [[ $? -eq 0 ]]
+if [[ ! $? -eq 0 ]]
     echo $mensagemAutomatizada "Instalando o Docker!"
     sudo apt install docker -y
     sudo apt install docker.io -y
@@ -15,14 +15,12 @@ if ! [[ $? -eq 0 ]]
 
     echo $mensagemAutomatizada "Atualizando os pacotes novamente..."
     sudo apt update && sudo apt upgrade -y
-
-    sleep 2
 fi
 
 echo $mensagemAutomatizada "Verificando se você já possuí os grupos de Docker corretos..."
 groups | grep docker
 
-if ! [[ $? -eq 0 ]]
+if [[ ! $? -eq 0 ]]
 then
     echo $mensagemAutomatizada "Adicionando algumas configurações do Docker"
     sudo groupadd docker
@@ -37,7 +35,7 @@ fi
 
 echo $mensagemAutomatizada "Verificando se o banco de dados já existe..."
 docker ps -a | grep datasentry-db
-        if ! [[ $? -eq 0 ]]
+        if [[ ! $? -eq 0 ]]
             then
             echo $mensagemAutomatizada "Voce já possuí o nosso banco de dados!"
             echo $mensagemAutomatizada "Deseja reinstalar novamente?(S/N)"
