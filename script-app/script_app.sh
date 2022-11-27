@@ -149,20 +149,65 @@ function Execnow () {
     fi
     
 }
-	
+function InstalarDocker () {
+    echo "$(tput setaf 10)[DataSentry-BOT]:$(tput setaf 7) Verificando se você já possuí o Docker..."
+
+    docker --version
+    if [ $? != 0 ];
+    then
+        echo "$(tput setaf 10)[DataSentry-BOT]:$(tput setaf 7) Instalando o Docker!"
+        sudo apt install docker -y
+        sudo apt install docker.io -y
+
+        sleep 2
+
+        echo "$(tput setaf 10)[DataSentry-BOT]:$(tput setaf 7) Atualizando os pacotes novamente..."
+        sudo apt update && sudo apt upgrade -y
+    fi
+
+    echo "$(tput setaf 10)[DataSentry-BOT]:$(tput setaf 7) Verificando se você já possuí os grupos de Docker corretos..."
+    groups | grep docker
+
+    if [ $? != 0 ];
+    then
+        echo "$(tput setaf 10)[DataSentry-BOT]:$(tput setaf 7) Adicionando algumas configurações do Docker"
+        sudo groupadd docker
+        sudo usermod -aG docker $USER
+        sudo systemctl enable docker
+        sudo systemctl restart docker
+        source ~/.bashrc
+        echo "$(tput setaf 10)[DataSentry-BOT]:$(tput setaf 7) Configurações realizadas!"
+    else
+        echo "$(tput setaf 10)[DataSentry-BOT]:$(tput setaf 7) Você já possuí os grupos corretos!"
+    fi
+}
+function IniciarContainerApp () {
+
+}
+function ValidarTipoDeInterface () {
+    echo $XDG_CURRENT_DESKTOP
+    if [ $? -eq 0 ]; 
+    then
+        echo "$(tput setaf 10)[DataSentry-BOT]:$(tput setaf 7) Você está utilizando interface gráfica no sistema!"
+        InstalacaoJava
+        sleep 1
+        BaixarDatasentry
+        sleep 1
+        ConfiguracoesAdicionais
+        sleep 1
+        Execnow
+    else
+        echo "$(tput setaf 10)[DataSentry-BOT]:$(tput setaf 7) Você está usando sistema via interface CLI!"
+        InstalarDocker
+        sleep 1
+        IniciarContainerApp
+    fi
+}
+
+
 echo  "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Olá usuário $USERNAME, vou te acompanhar para a instalação da aplicação do Datasentry em sua máquina"
 echo  "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Seus dados não estão sendo coletados, esse script serve exclusivamente para auxiliar na instalação do Datasentry em seu servidor."
 echo  "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Para a aplicação funcionar corretamente, vamos precisar instalar os seguintes recursos: JRE (Java)"
-
-sleep 2
-
-InstalacaoJava
-sleep 1
-BaixarDatasentry
-sleep 1
-ConfiguracoesAdicionais
-sleep 1
-Execnow
 
 sleep 2
 
