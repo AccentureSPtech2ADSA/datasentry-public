@@ -38,17 +38,17 @@ function InstalarDatasentry () {
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Instalando o Datasentry..."
     sleep 2
     # Se sim, vamos apagar o projeto e vamos clonar novamente o projeto em sua ultima versão estável
-    DIR=$HOME/datasentry
-    sudo mkdir $DIR
-    wget -q https://github.com/AccentureSPtech2ADSA/datasentry-public/blob/main/data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar?raw=true
-    sudo cp data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar\?raw\=true $DIR/datasentryapp.jar
-    sudo rm -rf 'data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar?raw=true'
-    sudo chmod 755 $DIR/datasentryapp.jar
+    DIR=datasentry
+    mkdir $DIR
+    wget https://datasentry-application-accenture-2022.s3.amazonaws.com/data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar
+    cp data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar $DIR/datasentryapp.jar
+    rm -rf 'data-sentry-1.0-SNAPSHOT-jar-with-dependencies.jar'
+    chmod 755 $DIR/datasentryapp.jar
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Instalação finalizada!!"
     sleep 2
 }
 function BaixarDatasentry () {
-    DIR=$HOME/datasentry
+    DIR=datasentry
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Vamos agora baixar o App do Datasentry!"
     sleep 1
     # Verificamos se o projeto já existe no /home/user, caso exista iremos perguntar se deseja substituir (recomendados caso esteja desatualizado)
@@ -74,7 +74,7 @@ function BaixarDatasentry () {
 }
 function ConfiguracoesAdicionais () {
     # verificar se atalhos nao existem
-    DIR=$HOME/datasentry
+    DIR=datasentry
     APP=$DIR/datasentryapp.jar
     echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Vamos fazer algumas configurações adicionais agora!"
     # Vamos perguntar se ele deseja criar um atalho para ele executar facilmente pela CLI
@@ -140,7 +140,7 @@ function Execnow () {
     # Se sim, executamos já, senão acabmos o script
     if [ $inst = "y" ]
         then
-            DIR=$HOME/datasentry
+            DIR=datasentry
             APP=$DIR/datasentryapp.jar
             java -jar $APP
         else
@@ -182,7 +182,9 @@ function InstalarDocker () {
     fi
 }
 function IniciarContainerApp () {
-
+    docker pull deofino/datasentry-cli
+    docker rm -f cli-java
+    docker run --name cli-java --network -it deofino/datasentry-cli
 }
 function ValidarTipoDeInterface () {
     echo $XDG_CURRENT_DESKTOP
@@ -209,6 +211,7 @@ echo  "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Olá usuário $USERNAME,
 echo  "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Seus dados não estão sendo coletados, esse script serve exclusivamente para auxiliar na instalação do Datasentry em seu servidor."
 echo  "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Para a aplicação funcionar corretamente, vamos precisar instalar os seguintes recursos: JRE (Java)"
 
+ValidarTipoDeInterface
 sleep 2
 
 echo "$(tput setaf 10)[Datasentry-BOT]:$(tput setaf 7) Configuração concluida!"
